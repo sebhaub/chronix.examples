@@ -16,8 +16,8 @@
 package de.qaware.chronix.importer.csv;
 
 import de.qaware.chronix.ChronixClient;
-import de.qaware.chronix.converter.KassiopeiaSimpleConverter;
-import de.qaware.chronix.converter.serializer.gen.SimpleProtocolBuffers;
+import de.qaware.chronix.converter.MetricTimeSeriesConverter;
+import de.qaware.chronix.converter.serializer.gen.MetricProtocolBuffers;
 import de.qaware.chronix.solr.client.ChronixSolrStorage;
 import de.qaware.chronix.timeseries.MetricTimeSeries;
 import de.qaware.chronix.timeseries.Point;
@@ -46,8 +46,8 @@ public class ChronixImporter {
     //serialized size of the list
     private static final int LIST_SERIALIZED_SIZE = 2;
     //serialized size of a point
-    private static final int POINT_SERIALIZED_SIZE = SimpleProtocolBuffers.Point.newBuilder()
-            .setT(Instant.now().toEpochMilli())
+    private static final int POINT_SERIALIZED_SIZE = MetricProtocolBuffers.Point.newBuilder()
+            .setTlong(Instant.now().toEpochMilli())
             .setV(4711).build()
             .getSerializedSize();
     private static final int SER_SIZE = LIST_SERIALIZED_SIZE + POINT_SERIALIZED_SIZE;
@@ -66,7 +66,7 @@ public class ChronixImporter {
     public ChronixImporter(String url, String[] attributeFields) {
         CHRONIX_SOLR_CLIENT = new HttpSolrClient(url);
         SCHEMA_FIELDS = attributeFields;
-        CHRONIX = new ChronixClient<>(new KassiopeiaSimpleConverter(),
+        CHRONIX = new ChronixClient<>(new MetricTimeSeriesConverter(),
                 new ChronixSolrStorage<>(200, null, null));
     }
 
